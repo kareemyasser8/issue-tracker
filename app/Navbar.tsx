@@ -12,7 +12,7 @@ const Navbar = () => {
   ]
 
   const currentPath = usePathname()
-  console.log("The current path is :" + currentPath)
+  // console.log("The current path is :" + currentPath)
 
   return (
     <>
