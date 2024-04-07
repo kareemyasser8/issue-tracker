@@ -27,6 +27,16 @@ const NewIssuePage = () => {
   const router = useRouter()
   const [error, setError] = useState("")
   const [isSubmmiting, setIsSubmmiting] = useState(false)
+  const onSubmit = async (data: any) => {
+    try {
+      setIsSubmmiting(true)
+      await axios.post("/api/issues", data)
+      router.push("/issues")
+    } catch (error) {
+      setIsSubmmiting(false)
+      setError("An expected Error occured")
+    }
+  }
 
   return (
     <div className="max-w-xl">
@@ -37,16 +47,7 @@ const NewIssuePage = () => {
       )}
       <form
         className="space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setIsSubmmiting(true)
-            await axios.post("/api/issues", data)
-            router.push("/issues")
-          } catch (error) {
-            setIsSubmmiting(false)
-            setError("An expected Error occured")
-          }
-        })}
+        onSubmit={handleSubmit((data)=> onSubmit(data))}
       >
         <TextField.Root>
           <TextField.Input placeholder="Title" {...register("title")} />
