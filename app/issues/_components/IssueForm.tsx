@@ -35,10 +35,12 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
   const router = useRouter()
   const [error, setError] = useState("")
   const [isSubmmiting, setIsSubmmiting] = useState(false)
+
   const onSubmit = async (data: any) => {
     try {
       setIsSubmmiting(true)
-      await axios.post("/api/issues", data)
+      if (issue) await axios.patch("/api/issues/" + issue.id, data)
+      else await axios.post("/api/issues", data)
       router.push("/issues")
     } catch (error) {
       setIsSubmmiting(false)
@@ -58,13 +60,17 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         onSubmit={handleSubmit((data) => onSubmit(data))}
       >
         <TextField.Root>
-          <TextField.Input defaultValue={issue?.title} placeholder="Title" {...register("title")} />
+          <TextField.Input
+            defaultValue={issue?.title}
+            placeholder="Title"
+            {...register("title")}
+          />
         </TextField.Root>
         <ErrorMessage>{errors.title?.message}</ErrorMessage>
         <Controller
           name="description"
           control={control}
-          defaultValue= {issue?.descripiton}
+          defaultValue={issue?.descripiton}
           render={({ field }) => (
             <SimpleMDE placeholder="Description" {...field} />
           )}
@@ -73,7 +79,8 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
 
         <Button disabled={isSubmmiting}>
-          Submit new Issue {isSubmmiting && <Spinner />}
+          {issue ? "Update Issue" : "Submit new Issue "}{" "}
+          {isSubmmiting && <Spinner />}
         </Button>
       </form>
     </div>
